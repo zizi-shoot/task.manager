@@ -4,6 +4,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/data/main_menu.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/helpers/functions.php';
 
 $pathArr = array_column($menuItems, 'title', 'path');
+$pagePath = str_replace('index.php', '', $_SERVER['REQUEST_URI']);
 ?>
 <!DOCTYPE html>
 <html>
@@ -29,6 +30,6 @@ $pathArr = array_column($menuItems, 'title', 'path');
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td class="left-collum-index">
-                <h1><?= $pathArr[$_SERVER['REQUEST_URI']] ?></h1>
+                <h1><?= $pathArr[$pagePath] ?></h1>
                 <p>Вести свои личные списки, например покупки в магазине, цели, задачи и многое другое. Делится списками с друзьями и просматривать списки друзей.</p>
             </td>

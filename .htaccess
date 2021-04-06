@@ -1,0 +1,5 @@
+RewriteEngine On
+
+RewriteRule ^(route/.*)$ route/index.php
+
+
