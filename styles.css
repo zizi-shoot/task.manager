@@ -68,6 +68,17 @@ a:hover {
     list-style: none;
 }
 
+.auth {
+    display: inline-block;
+    float: left;
+    margin: 0 3px 0 32px;
+    padding: 6px 10px;
+    font-size: 16px;
+    text-decoration: none;
+    color: #999;
+    background: url(i/top-menu-bg.gif) bottom repeat-x #efefef;
+}
+
 .main-menu a {
     font-size: 12px;
 }
@@ -213,22 +224,3 @@ a:hover {
 .error {
     color: #f00;
 }
-
-.success {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: max-content;
-    height: max-content;
-    margin: auto;
-    padding: 20px 30px;
-    border: 2px solid #8fb772;
-    border-radius: 10px;
-    font-size: 20px;
-    color: #8fb772;
-    background-color: #c5ecad;
-}
-
-

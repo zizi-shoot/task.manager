@@ -23,12 +23,20 @@ function cutString(string $str, int $length = 15, string $appends = '...'): stri
 function showMenu(array $array, string $placement): void
 {
     $array = $placement === 'footer' ? arraySort($array, SORT_DESC, 'title') : arraySort($array);
-    $activeClass = null;
     foreach ($array as $item) {
         $activeClass = $item['path'] === $_SERVER['REQUEST_URI'] ? 'active' : null;
         $title = cutString($item['title']);
-        echo "<li><a class='{$activeClass}' href='{$item['path']}'>{$title}</a></li>";
+        echo "<li><a class='$activeClass' href='{$item['path']}'>$title</a></li>";
     }
+}
+
+function clean(string $value): string
+{
+    $value = trim($value);
+    $value = stripslashes($value);
+    $value = strip_tags($value);
+
+    return htmlspecialchars($value);
 }
 
 

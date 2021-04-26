@@ -1,41 +1,14 @@
 <?php
 
-include_once $_SERVER['DOCUMENT_ROOT'] . '/include/logins.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/include/passwords.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/data/main_menu.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/helpers/functions.php';
+session_start();
 
-$userLogin = $_POST['login'] ?? null;
-$userPass = $_POST['password'] ?? null;
-$authorization = false;
-$form = false;
-
-function clean($value)
-{
-    $value = trim($value);
-    $value = stripslashes($value);
-    $value = strip_tags($value);
-    $value = htmlspecialchars($value);
-
-    return $value;
+if (isset($_SESSION['auth']) && $_SESSION['auth'] && isset($_COOKIE['login'])) {
+    setcookie('login', $_COOKIE['login'], 0, '/');
 }
 
-if (isset($_GET['login']) && $_GET['login'] === 'yes') {
-    $form = true;
-
-    if (isset($userLogin) && isset($userPass)) {
-        $userLogin = clean($userLogin);
-        $userPass = clean($userPass);
-        $authorization = in_array($userLogin, $logins) && $passwords[$userLogin] === $userPass;
-    }
-}
+require_once $_SERVER['DOCUMENT_ROOT'] . '/helpers/authorization.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/templates/header.php';
-?>
 
-
-
-
-<?php
 if ($form && !$authorization) { ?>
     <td class="right-collum-index">
 
@@ -53,8 +26,8 @@ if ($form && !$authorization) { ?>
                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                         <td class="iat">
-                            <label for="login_id">Ваш e-mail:</label>
-                            <input id="login_id" size="30" name="login">
+                            <label for="login_id">Ваш логин:<?= isset($_COOKIE['login']) ? " {$_COOKIE['login']}" : null ?></label>
+                            <input style="visibility: <?= isset($_COOKIE['login']) ? 'hidden' : 'visible' ?>;" id="login_id" size="30" name="login">
                         </td>
                     </tr>
                     <tr>
@@ -69,7 +42,7 @@ if ($form && !$authorization) { ?>
                 </table>
             </form>
             <?php
-            if (isset($userLogin) || isset($userPass)) { ?>
+            if (isset($userLogin) && !isset($_COOKIE['login']) || isset($userPass)) { ?>
                 <p class="error">Неверный логин или пароль</p>
                 <?php
             } ?>
@@ -82,9 +55,7 @@ if ($form && !$authorization) { ?>
 </tr>
 </table>
 <?php
-if ($authorization) {
-    include_once 'include/success.php';
-}
+
 include_once $_SERVER['DOCUMENT_ROOT'] . '/templates/footer.php';
 ?>
 
