@@ -1,7 +1,5 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/data/logins.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/data/passwords.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/helpers/functions.php';
 
 if (!isset($_COOKIE['login'])) {
@@ -18,9 +16,9 @@ if (isset($_GET['login']) && $_GET['login'] === 'yes') {
     if (isset($userLogin) && isset($userPass)) {
         $userLogin = clean($userLogin);
         $userPass = clean($userPass);
-        $authorization = $_SESSION['auth'] = in_array($userLogin, $logins) && $passwords[$userLogin] === $userPass;
-        setcookie('login', $userLogin, 0, '/');
+        $authorization = $_SESSION['auth'] = password_verify($userPass, getPass($userLogin));
         if ($authorization) {
+            setcookie('login', $userLogin, 0, '/');
             header('Location: /');
         }
     }
@@ -30,3 +28,4 @@ if (isset($_GET['login']) && $_GET['login'] === 'no') {
     unset($_SESSION['auth']);
 }
 
+mysqli_close(connect());
