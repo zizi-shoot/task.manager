@@ -15,7 +15,6 @@ if (isset($_GET['login']) && $_GET['login'] === 'yes') {
 
     if (isset($userLogin) && isset($userPass)) {
         $userLogin = clean($userLogin);
-        $userPass = clean($userPass);
         $authorization = $_SESSION['auth'] = password_verify($userPass, getPass($userLogin));
         if ($authorization) {
             setcookie('login', $userLogin, 0, '/');
@@ -28,4 +27,4 @@ if (isset($_GET['login']) && $_GET['login'] === 'no') {
     unset($_SESSION['auth']);
 }
 
-mysqli_close(connect());
+
