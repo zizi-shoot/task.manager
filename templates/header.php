@@ -35,6 +35,7 @@ $pagePath = str_replace('index.php', '', $_SERVER['REQUEST_URI']);
         if (isset($_SESSION['auth']) && $_SESSION['auth']) {
             echo '<a href="/?login=no" class="auth">Выйти</a>';
             echo '<a href="/profile" class="auth">Мой профиль</a>';
+            echo '<a href="/posts" class="auth">Мои сообщения</a>';
         } else {
             echo '<a href="?login=yes" class="auth">Авторизоваться</a>';
         }

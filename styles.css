@@ -234,3 +234,27 @@ a:hover {
     margin-bottom: 8px;
 }
 
+.messages__title {
+    font-size: 24px;
+}
+
+.messages__list {
+    font-size: 20px;
+    list-style: none;
+}
+
+.messages__item:not(:last-child) {
+    margin-bottom: 8px;
+}
+
+.messages__item span {
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-size: 14px;
+    color: white;
+}
+
+.messages__item a {
+    text-decoration: none;
+}
+
