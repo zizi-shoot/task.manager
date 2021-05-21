@@ -27,4 +27,6 @@ if (isset($_GET['login']) && $_GET['login'] === 'no') {
     unset($_SESSION['auth']);
 }
 
+mysqli_close(connect());
+
 

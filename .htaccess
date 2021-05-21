@@ -1,6 +1,6 @@
 RewriteEngine On
 RewriteRule ^(route/.*)$ route/index.php
-RewriteRule ^(posts/item_.*)$ posts/item/index.php
+RewriteRule ^(posts/item\?id=\d\d.*)$ posts/item/index.php
 
 php_value session.name "session_id"
 php_value session.gc_maxlifetime "1200"

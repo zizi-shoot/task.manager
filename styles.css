@@ -258,3 +258,50 @@ a:hover {
     text-decoration: none;
 }
 
+.messages_add {
+    display: inline-block;
+    padding: 8px 16px;
+    text-decoration: none;
+    background: url(i/top-menu-bg.gif) bottom repeat-x #efefef;
+}
+
+.messages_add:hover {
+    text-decoration: none;
+    color: #fff;
+    background: url(i/fl-bg-hover.gif) bottom repeat-x #67bdff;
+}
+
+.new_message__form {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+}
+
+.new_message__label {
+    margin-bottom: 4px;
+}
+
+.new-message__input {
+    margin-bottom: 16px;
+}
+
+.new-message__submit {
+    align-self: center;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background: url(i/top-menu-bg.gif) bottom repeat-x #efefef;
+}
+
+.new-message__submit:hover {
+    color: #fff;
+    background: url(i/fl-bg-hover.gif) bottom repeat-x #67bdff;
+}
+
+#body {
+    min-height: 100px;
+    font-family: Arial;
+    resize: vertical;
+}
+
+

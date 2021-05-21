@@ -59,7 +59,6 @@ function getPass(string $login): string
     $sql = "SELECT u.passwords FROM users u WHERE u.e_mail = '$value'";
     $result = mysqli_query(connect(), $sql);
     $pass = mysqli_fetch_assoc($result);
-    mysqli_close(connect());
 
     return $pass['passwords'] ?? '';
 }
@@ -67,56 +66,121 @@ function getPass(string $login): string
 function getUserData(string $login): array
 {
     $value = mysqli_real_escape_string(connect(), clean($login));
-    $sql = "SELECT u.full_name, u.e_mail, u.phone, u.agreement, u.state, g.name group_name, g.description group_description
+    $sql = "SELECT u.id, u.full_name, u.e_mail, u.phone, u.agreement, u.state, g.name group_name, g.description group_description
             FROM users u
                      LEFT JOIN group_user gu ON u.id = gu.user_id
                      LEFT JOIN `groups` g ON g.id = gu.group_id
             WHERE u.e_mail = '$value'";
     $result = mysqli_query(connect(), $sql);
-    $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-    mysqli_close(connect());
-
-    return $data;
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 function getUserMessages(string $login): array
 {
     $value = mysqli_real_escape_string(connect(), clean($login));
     $sql = "SELECT m.id,
-                   m.title,
                    m.subject,
+                   m.body,
                    m.sent_time,
-                   m.read,
+                   m.read_state,
                    ua.full_name AS author,
+                   ua.e_mail    AS author_mail,
                    ur.full_name AS recipient,
-                   msp.name AS parent_section,
-                   msp.color AS parent_color, 
-                   ms.name AS section,
+                   msp.name     AS parent_section,
+                   msp.color    AS parent_color,
+                   ms.name      AS section,
                    ms.color
             FROM messages m
                      LEFT JOIN users ua ON ua.id = m.author_id
                      LEFT JOIN users ur ON ur.id = m.recipient_id
                      LEFT JOIN message_sections ms ON ms.id = m.message_section_id
                      LEFT JOIN message_sections msp ON msp.id = ms.parent_id
-            WHERE ur.id = '3'";
+            WHERE ur.e_mail = '$value'";
     $result = mysqli_query(connect(), $sql);
-    $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-    return $data;
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function getSections(): array
+{
+    $sql = "SELECT * FROM message_sections";
+    $result = mysqli_query(connect(), $sql);
+
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+function getRecipients(): array
+{
+    $sql = "SELECT u.id, u.full_name
+            FROM users u
+                     LEFT JOIN group_user gu ON u.id = gu.user_id
+            WHERE gu.group_id = 2";
+    $result = mysqli_query(connect(), $sql);
+
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 function renderMessages(array $values, string $readState): void
 {
     foreach ($values as $value) {
-        if ($value['read'] === $readState) {
+        if ($value['read_state'] === $readState) {
             $parentLabel = $value['parent_section']
                 ? "<span style=\"background: ${value['parent_color']};\">${value['parent_section']}</span>"
                 : null;
             $label = "<span style=\"background: ${value['color']};\">${value['section']}</span>";
-            echo "<li class='messages__item'>${parentLabel} ${label} <a href='item_${value['id']}'>${value['title']}</a></li>";
+            echo "<li class='messages__item'>$parentLabel $label <a target='_blank' rel='noopener' href='item?id=${value['id']}'>${value['subject']}</a></li>";
         }
     }
 }
+
+function renderSections(array $sections, $incorrectData): void
+{
+    foreach ($sections as $item) {
+        $selectedState = null;
+
+        if (isset($incorrectData) && $item['id'] === $incorrectData['section_id']) {
+            $selectedState = 'selected';
+        }
+
+        if (!isset($item['parent_id'])) {
+            echo "<option $selectedState value='${item['id']}'>${item['name']}</option>";
+            renderSections($item['child_sections'], $incorrectData);
+        } else {
+            echo "<option $selectedState value='${item['id']}'>&nbsp;&nbsp;&nbsp;${item['name']}</option>";
+        }
+    }
+}
+
+function insertMessage(array $data, string $id): ?string
+{
+    $data = array_map(fn($item) => validate($item), $data);
+
+    if (array_search(null, $data)) {
+        return 'Необходимо заполнить все поля';
+    }
+
+    $sql = "INSERT INTO messages (subject, body, author_id, recipient_id, message_section_id)
+            VALUES ('${data['subject']}', '${data['body']}', '$id', '${data['recipient_id']}', '${data['section_id']}')";
+
+    if (!mysqli_query(connect(), $sql)) {
+        return mysqli_error(connect());
+    }
+
+    return null;
+}
+
+function validate(string $value): ?string
+{
+    $value = clean($value);
+    if (empty($value)) {
+        return null;
+    }
+
+    return mysqli_real_escape_string(connect(), $value);
+}
+
+
+
 
 

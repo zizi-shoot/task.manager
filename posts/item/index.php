@@ -8,20 +8,24 @@ if (!isset($_SESSION['auth']) || !$_SESSION['auth']) {
     header('Location: /?login=yes');
 }
 
-$messages = getUserMessages('ag.dorofeev@gmail.com');
+mysqli_query(connect(), "UPDATE messages SET read_state = '1' WHERE id = '{$_REQUEST['id']}'");
+
+$messages = getUserMessages($_COOKIE['login']);
+$message = array_filter($messages, fn($item) => $item['id'] === $_REQUEST['id'])[0];
 
 include_once $_SERVER['DOCUMENT_ROOT'] . '/templates/header.php';
 ?>
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td class="left-collum-index">
-                <h2>Цели на год</h2>
-                <small>2021-05-15 23:45:36</small>
-                <p>От: <b>Филиппов Артем Львович</b> (a.filippov@gmail.com)</p>
+                <h2><?= $message['subject'] ?></h2>
+                <small><?= $message['sent_time'] ?></small>
+                <p>От: <?= "<b>${message['author']}</b> (${message['author_mail']})" ?></p>
                 <hr>
-                <p>Привет. Сегодня после обеда обсудим годовой план</p>
+                <p><?= $message['body'] ?></p>
             </td>
         </tr>
     </table>
 <?php
 include_once $_SERVER['DOCUMENT_ROOT'] . '/templates/footer.php';
+mysqli_close(connect());

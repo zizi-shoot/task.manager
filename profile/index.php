@@ -51,3 +51,4 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/templates/header.php';
     </table>
 <?php
 include_once $_SERVER['DOCUMENT_ROOT'] . '/templates/footer.php';
+mysqli_close(connect());
